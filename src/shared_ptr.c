@@ -6,20 +6,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-/** Local Includes */
-#include "../include/smart_ptr.h"
-
-
-/////////////////////////////////////////////////////////////////////////////////////
-
-/** Constructs a new unique_ptr */
-unique_ptr_t *unique_ptr_make(void *ptr, destructor_t destructor) 
-{
-      unique_ptr_t *unique_ptr = malloc(sizeof(unique_ptr_t));
-      unique_ptr->ptr = ptr;
-      unique_ptr->destructor = destructor;
-      return unique_ptr;
-}
+/** Lib Includes */
+#include <smart_ptr/shared_ptr.h>
 
 
 /** Constructs a new shared_ptr */
@@ -31,23 +19,6 @@ shared_ptr_t *shared_ptr_make(void *ptr, destructor_t destructor)
       shared_ptr->ref_count = malloc(sizeof(int));
       *shared_ptr->ref_count = 1;
       return shared_ptr;
-}
-
-/////////////////////////////////////////////////////////////////////////////////////
-
-/** Moves ownership of a unique_ptr to another unique_ptr */
-unique_ptr_t *unique_ptr_move(unique_ptr_t *source)
-{
-      if (source == NULL) return NULL;
-
-      unique_ptr_t *unique_ptr = malloc(sizeof(unique_ptr_t));
-      if (unique_ptr == NULL) return NULL;
-
-      unique_ptr->ptr = source->ptr;
-      unique_ptr->destructor = source->destructor;
-
-      free(source);
-      return unique_ptr;
 }
 
 
@@ -84,15 +55,6 @@ shared_ptr_t *shared_ptr_move(shared_ptr_t *ptr)
       return shared_ptr;
 }
 
-/////////////////////////////////////////////////////////////////////////////////////
-
-/** Destroys a unique_ptr */
-void unique_ptr_destroy(unique_ptr_t *ptr)
-{
-      if (ptr == NULL) return;
-      if (ptr->destructor != NULL) ptr->destructor(ptr->ptr);
-      free(ptr);
-}
 
 /** Destroys a shared_ptr */
 void shared_ptr_destroy(shared_ptr_t *ptr)
@@ -107,14 +69,6 @@ void shared_ptr_destroy(shared_ptr_t *ptr)
       free(ptr);
 }
 
-/////////////////////////////////////////////////////////////////////////////////////
-
-/** Gets the pointer from a unique_ptr */
-void *unique_ptr_get(unique_ptr_t *ptr)
-{
-      if (ptr == NULL) return NULL;
-      return ptr->ptr;
-}
 
 /** Gets the pointer from a shared_ptr */
 void *shared_ptr_get(shared_ptr_t *ptr)
@@ -123,7 +77,6 @@ void *shared_ptr_get(shared_ptr_t *ptr)
       return ptr->ptr;
 }
 
-/////////////////////////////////////////////////////////////////////////////////////
 
 /** Gets the reference count from a shared_ptr */
 inline int shared_ptr_get_ref_count(shared_ptr_t *ptr)
@@ -146,7 +99,6 @@ void shared_ptr_decrement_ref_count(shared_ptr_t *ptr)
       *ptr->ref_count--;
 }
 
-/////////////////////////////////////////////////////////////////////////////////////
 
 // MIT License
 // 

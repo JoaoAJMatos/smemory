@@ -7,7 +7,7 @@
 #include <stdlib.h>
 
 /** Smart Ptr Lib */
-#include <smart_ptr.h>
+#include <smart_ptr/unique_ptr.h>
 
 
 typedef struct {
