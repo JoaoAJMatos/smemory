@@ -1,0 +1,5 @@
+add_executable(shared_ptr_example shared_ptr_example.c)
+add_executable(unique_ptr_example unique_ptr_example.c)
+
+target_link_libraries(shared_ptr_example smart_ptr)
+target_link_libraries(unique_ptr_example smart_ptr)
