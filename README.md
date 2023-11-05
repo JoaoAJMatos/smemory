@@ -1,6 +1,9 @@
 # C smart_ptr
 
-This library provides a "smart pointer" implementation for C.
+The `smart_ptr` library provides smart pointer structures and functions
+for managing memory in a safe and efficient way in C.
+
+Smart pointers are objects that store pointers to dynamically allocated (heap) objects. They behave much like built-in C pointers except that they automatically delete the object pointed to at the appropriate time.
 
 ## Features
 
@@ -59,7 +62,7 @@ void product_destroy(void *product) {
 
 ```c
 #include <stdio.h>
-#include <smart_ptr.h>
+#include <smart_ptr/unique_ptr.h>
 
 #include "product.h"
 
@@ -83,7 +86,7 @@ int main(void) {
 
 ```c
 #include <stdio.h>
-#include <smart_ptr.h>
+#include <smart_ptr/shared_ptr.h>
 
 #include "product.h"
 
