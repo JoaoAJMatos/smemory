@@ -7,8 +7,7 @@
 #include <stdlib.h>
 
 /** Smart Ptr Lib */
-#include <smart_ptr/unique_ptr.h>
-
+#include <smemory/unique_ptr.h>
 
 typedef struct {
     char *name;
@@ -25,25 +24,25 @@ product_t *product_make(char *name, int price)
 
 void product_destroy(void *product)
 {
+      if (product == NULL) return;
+      printf("Destroying product: %s\n", ((product_t *)product)->name);
       free(product);
 }
 
-int main(void)
+int main(void) 
 {
       // Create a unique_ptr
-      unique_ptr_t *ptr1 = unique_ptr_make(product_make("Product 1", 100), product_destroy);
+      unique_ptr *ptr1 = unique_ptr_make(product_make("Product 1", 100), product_destroy);
 
-      // Move the unique_ptr to another unique_ptr
-      unique_ptr_t *ptr2 = unique_ptr_move(ptr1);
+      // Move ownership of ptr1 to ptr2
+      unique_ptr *ptr2 = unique_ptr_move(&ptr1);
+
+      // Change the name
+      ((product_t *)unique_ptr_get(ptr2))->name = "Product 2";
 
       // Print the product name
       printf("Ptr 2: %s\n", ((product_t *)unique_ptr_get(ptr2))->name);
-
-      // Destroy the unique_ptr
-      unique_ptr_destroy(ptr2);
-
-      // Print the product name of ptr1
-      printf("Ptr 1: %s\n", ((product_t *)unique_ptr_get(ptr1))->name); // Segmentation fault
-
+      
       return 0;
 }
+

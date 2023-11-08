@@ -8,6 +8,10 @@ file(GLOB HEADER_FILES include/smart_ptr/*.h)
 
 add_library(smart_ptr STATIC ${SOURCE_FILES} ${HEADER_FILES})
 
+# link to C pthread
+find_package(Threads REQUIRED)
+target_link_libraries(smart_ptr Threads::Threads)
+
 target_include_directories(smart_ptr PUBLIC include)
 
 install(TARGETS smart_ptr DESTINATION lib)
