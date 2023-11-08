@@ -13,6 +13,10 @@
 
 /////////////////////////////////////////////////////////////////////////////////////
 
+#define shared_ptr __attribute__((cleanup(shared_ptr_destroy))) shared_ptr_t
+
+/////////////////////////////////////////////////////////////////////////////////////
+
 /**
  * @brief Shared pointer structure
  * 
@@ -31,7 +35,7 @@
  *          The default deleter for shared_ptr is a function object that calls
  *          delete on the pointer to the object.
  */
-typedef struct shared_ptr {
+typedef struct {
     void *ptr;
     destructor_t destructor;
     int *ref_count;
@@ -84,7 +88,7 @@ shared_ptr_t *shared_ptr_move(shared_ptr_t *ptr);
  * 
  * @param ptr Pointer to the shared pointer to destroy
  */
-void shared_ptr_destroy(shared_ptr_t *ptr);
+void shared_ptr_destroy(shared_ptr_t **ptr);
 
 /////////////////////////////////////////////////////////////////////////////////////
 

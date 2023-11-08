@@ -13,6 +13,10 @@
 
 /////////////////////////////////////////////////////////////////////////////////////
 
+#define unique_ptr __attribute__((cleanup(unique_ptr_destroy))) unique_ptr_t
+
+/////////////////////////////////////////////////////////////////////////////////////
+
 /**
  * @brief Unique pointer structure
  * 
@@ -31,7 +35,7 @@
  *          The default deleter for unique_ptr is a function object that calls
  *          delete on the pointer to the object.
  */
-typedef struct unique_ptr {
+typedef struct {
     void *ptr;
     destructor_t destructor;
 } unique_ptr_t;
@@ -62,7 +66,7 @@ unique_ptr_t *unique_ptr_make(void *ptr, destructor_t destructor);
  * @param source Pointer to the unique pointer to copy
  * @return unique_ptr_t* Pointer to the new unique pointer
  */
-unique_ptr_t *unique_ptr_move(unique_ptr_t *source);
+unique_ptr_t *unique_ptr_move(unique_ptr_t **source);
 
 /////////////////////////////////////////////////////////////////////////////////////
 
@@ -73,7 +77,7 @@ unique_ptr_t *unique_ptr_move(unique_ptr_t *source);
  * 
  * @param ptr Pointer to the unique pointer to destroy
  */
-void unique_ptr_destroy(unique_ptr_t *ptr);
+void unique_ptr_destroy(unique_ptr_t **ptr);
 
 /////////////////////////////////////////////////////////////////////////////////////
 
