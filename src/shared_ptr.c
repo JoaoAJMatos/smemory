@@ -7,18 +7,18 @@
 #include <stdlib.h>
 
 /** Lib Includes */
-#include <smart_ptr/shared_ptr.h>
+#include <smemory/shared_ptr.h>
 
 
 /** Constructs a new shared_ptr */
 shared_ptr_t *shared_ptr_make(void *ptr, destructor_t destructor)
 {
-      shared_ptr_t *shared_ptr = malloc(sizeof(shared_ptr_t));
-      shared_ptr->ptr = ptr;
-      shared_ptr->destructor = destructor;
-      shared_ptr->ref_count = malloc(sizeof(int));
-      *shared_ptr->ref_count = 1;
-      return shared_ptr;
+      shared_ptr_t *_shared_ptr = malloc(sizeof(shared_ptr_t));
+      _shared_ptr->ptr = ptr;
+      _shared_ptr->destructor = destructor;
+      _shared_ptr->ref_count = malloc(sizeof(int));
+      *_shared_ptr->ref_count = 1;
+      return _shared_ptr;
 }
 
 
@@ -27,15 +27,15 @@ shared_ptr_t *shared_ptr_copy(shared_ptr_t *source)
 {
       if (source == NULL) return NULL;
 
-      shared_ptr_t *shared_ptr = malloc(sizeof(shared_ptr_t));
-      if (shared_ptr == NULL) return NULL;
+      shared_ptr_t *_shared_ptr = malloc(sizeof(shared_ptr_t));
+      if (_shared_ptr == NULL) return NULL;
 
-      shared_ptr->ptr = source->ptr;
-      shared_ptr->destructor = source->destructor;
-      shared_ptr->ref_count = source->ref_count;
+      _shared_ptr->ptr = source->ptr;
+      _shared_ptr->destructor = source->destructor;
+      _shared_ptr->ref_count = source->ref_count;
       shared_ptr_increment_ref_count(source);
 
-      return shared_ptr;
+      return _shared_ptr;
 }
 
 
@@ -44,29 +44,34 @@ shared_ptr_t *shared_ptr_move(shared_ptr_t *ptr)
 {
       if (ptr == NULL) return NULL;
 
-      shared_ptr_t *shared_ptr = malloc(sizeof(shared_ptr_t));
-      if (shared_ptr == NULL) return NULL;
+      shared_ptr_t *_shared_ptr = malloc(sizeof(shared_ptr_t));
+      if (_shared_ptr == NULL) return NULL;
 
-      shared_ptr->ptr = ptr->ptr;
-      shared_ptr->destructor = ptr->destructor;
-      shared_ptr->ref_count = ptr->ref_count;
+      _shared_ptr->ptr = ptr->ptr;
+      _shared_ptr->destructor = ptr->destructor;
+      _shared_ptr->ref_count = ptr->ref_count;
 
       free(ptr);
-      return shared_ptr;
+      return _shared_ptr;
 }
 
 
 /** Destroys a shared_ptr */
-void shared_ptr_destroy(shared_ptr_t *ptr)
+void shared_ptr_destroy(shared_ptr_t **ptr)
 {
       if (ptr == NULL) return;
-      shared_ptr_decrement_ref_count(ptr);
+      if (*ptr == NULL) return;
 
-      if (shared_ptr_get_ref_count(ptr) <= 0) {
-            if (ptr->destructor != NULL) ptr->destructor(ptr->ptr);
+      shared_ptr_decrement_ref_count(*ptr);
+
+      if (shared_ptr_get_ref_count(*ptr) <= 0) {
+            if ((*ptr)->destructor != NULL) {
+                  ((*ptr)->destructor)((*ptr)->ptr);
+            }
+            free((*ptr)->ref_count);
+            free(*ptr);
+            *ptr = NULL;
       }
-
-      free(ptr);
 }
 
 
